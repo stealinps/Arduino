@@ -6,7 +6,8 @@ int state;
 int redVal = 0;
 int greenVal = 0;
 int yelVal = 0;
-
+unsigned long lastPress = 0;
+bool lastState = HIGH;
 int i;
 
 void setup() {
@@ -22,15 +23,26 @@ void setup() {
   }
   i=0;
 }
-
 void loop() {
   int phase = i / 255;
   int step = i % 255;
-  state=digitalRead(butpin);
-  if(state==HIGH){
+state = digitalRead(butpin);
+
+if (lastState == HIGH && state == LOW) {  
+    if (millis() - lastPress > 500) {     
+        i = ((i / 255 + 1) % 3) * 255;    
+        lastPress = millis();
+    }
+}
+
+lastState = state;
+
+
+  if(state==LOW){
     analogWrite(pin1, 0);
     analogWrite(pin2, 0);
     analogWrite(pin3, 0);
+    i = (i + 255) % 765;
   }
   else{
     switch (phase) {
