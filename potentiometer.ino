@@ -3,9 +3,16 @@ void setup(){
   pinMode(9,OUTPUT);
   pinMode(10,OUTPUT);
   pinMode(11,OUTPUT);
+  pinMode(2,INPUT_PULLUP);
 }
-int potval;
+int potval=0;
+int state;
 void loop(){
-  potval=analogRead(A0);
+  state=digitalRead(2);
+  Serial.println(state);
+  if(state==HIGH){
+    potval=analogRead(A0);
+  }
+  //only change brightness if button not pressed
   analogWrite(9,potval/4);
 }
