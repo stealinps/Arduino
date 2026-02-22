@@ -1,6 +1,11 @@
 My codes for arduino projects
+
 resistor(r); ground(gnd); red green blue LEDs(RGB); 
 power supply(ps); potentiometer(pot); transistor(t);
+moisture sensor(ms);
+
+Resistor✅ 
+pin>+led->r>gnd
 
 LED✅ 
 pin/ps>led>r>gnd
@@ -12,7 +17,7 @@ servo✅
 pin+ps>servo>gnd
 
 buzzer(buz)✅ 
-pin/ps>buz>r>gnd
+pin/ps>+buz->r>gnd
 
 button(btn)✅ 
 pin(input_fullup)>btn>gnd
@@ -25,16 +30,20 @@ motor✅
 
 relay
 
-ldr
+ldr✅ 
+[same as resistor]
 
-transistor
+transistor(npn)✅ 
+[(pin/ps>t)+{pin(control)>t(mid)}]>gnd
 
 ir sensor
 
 ultrasonic sensor
 
-moisture sensor
+moisture sensor✅ 
+([pin ANALOG/DIGITAL>ms(AO/DO)]+5v/ps>vcc)>gnd
 
 lcd
+
 esp32
 
