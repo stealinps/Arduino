@@ -44,7 +44,8 @@ ultrasonic sensor✅
 moisture sensor✅ 
 ([pin ANALOG/DIGITAL>ms(AO/DO)]+5v/ps>vcc)>gnd
 
-lcd
+lcd✅ 
+(VCC>5V)+(gnd>gnd)+(sda>A4)+(scl>A5)
 
 esp32
 
