@@ -10,7 +10,12 @@ void setup()
 {
 	lcd.begin();
 	lcd.backlight();
-	lcd.print("Hello, world!");
+	lcd.setCursor(0, 0); 
+	lcd.print("Distance");
+	lcd.setCursor(0, 1);  
+	lcd.print("Measurement!");
+	delay(1000);
+	lcd.clear();
 	Serial.begin(9600);
   pinMode(trig,OUTPUT);
   pinMode(echo,INPUT);
@@ -34,9 +39,8 @@ void loop()
   Serial.println();
 	lcd.print(cm);
 	lcd.print("cm");
-	lcd.print(" ");
-
-  delay(1000);
+  delay(500);
+	lcd.clear();
 }
 long microsecondsToInches(long microseconds) {
   return microseconds / 74 / 2;
@@ -45,3 +49,4 @@ long microsecondsToInches(long microseconds) {
 long microsecondsToCentimeters(long microseconds) {
   return microseconds / 29 / 2;
 }
+
