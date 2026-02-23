@@ -38,7 +38,8 @@ transistor(npn)✅
 
 ir sensor
 
-ultrasonic sensor
+ultrasonic sensor✅
+[(5V>VCC)+(pin1>trig)+(pin2>echo)]>gnd
 
 moisture sensor✅ 
 ([pin ANALOG/DIGITAL>ms(AO/DO)]+5v/ps>vcc)>gnd
