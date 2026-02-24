@@ -47,5 +47,8 @@ moisture sensor✅
 lcd✅ 
 (VCC>5V)+(gnd>gnd)+(sda>A4)+(scl>A5)
 
-esp32
+esp32✅
+1.install esp32 board package at package manager
+2.install esp32 driver
+3.use arduino codes
 
