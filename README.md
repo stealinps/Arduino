@@ -2,7 +2,7 @@ My codes for arduino projects
 
 resistor(r); ground(gnd); red green blue LEDs(RGB); 
 power supply(ps); potentiometer(pot); transistor(t);
-moisture sensor(ms);
+moisture sensor(ms); motor driver(md);
 
 Resistor✅ 
 pin>+led->r>gnd
@@ -27,6 +27,10 @@ potentiometer✅
 
 motor✅ 
 ([ps>motor>t]+[pin>t(mid)])>gnd
+
+motor driver(L298N)✅
+(motors>sides)+(battery+>12v)+(gnd>battery->gnd[microcontroller])+(pin1>en1+pin2>en2+pin3>en3+pin4>en4)
+
 
 relay ❌
 
