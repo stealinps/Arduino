@@ -2,7 +2,7 @@ My codes for arduino projects
 
 resistor(r); ground(gnd); red green blue LEDs(RGB); 
 power supply(ps); potentiometer(pot); transistor(t);
-moisture sensor(ms); motor driver(md);
+moisture sensor(ms); motor driver(md); cooling fan(fan);
 
 Resistor✅ 
 pin>+led->r>gnd
@@ -12,6 +12,12 @@ pin/ps>led>r>gnd
 
 fade RGB✅ 
 [(pin1>led1>r1)+(pin2>led2>r2)+(pin3>led3>r3)]>gnd
+
+laser✅
+pin>+led->r>gnd
+
+cooling fan✅
+pin>r>fan>gnd
 
 servo✅ 
 pin+ps>servo>gnd
