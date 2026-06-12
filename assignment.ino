@@ -1,8 +1,8 @@
 #include <WiFi.h>
 
-// Update these to match your Phone's Hotspot settings exactly!
-const char* ssid = "Stealinp";
-const char* password = "12345678";
+
+const char* ssid = "";
+const char* password = "";
 
 // Set web server port number to 80
 WiFiServer server(80);
@@ -13,7 +13,15 @@ String output27State = "off";
 
 const int output26 = 26;
 const int output27 = 27;
-const int statepin = 34; //a switch will be used to  determine the state
+const int statepin = 14; //a switch will be used to  determine the state
+const int trig     = 19;
+const int echo     = 18;
+const int ldr      = 35;
+const int ir       = 33;
+const int led      = 5;
+const int buzzer   = 21;
+
+
 
 enum state{
   offline,online
@@ -24,23 +32,39 @@ unsigned long currentTime = millis();
 unsigned long previousTime = 0; 
 const long timeoutTime = 2000;
 
+long microsecondsToCentimeters(long microseconds) {
+  return microseconds / 29 / 2;
+}
+
 void setup() {
   Serial.begin(115200);
   delay(1000); 
-
+  
   pinMode(output26, OUTPUT);
   pinMode(output27, OUTPUT);
   pinMode(statepin,INPUT);
+  pinMode(ldr,INPUT);
+  pinMode(trig,OUTPUT);
+  pinMode(echo,INPUT);
+  pinMode(led,OUTPUT);
+  pinMode(buzzer,OUTPUT);
+  pinMode(statepin,INPUT_PULLUP);
+
   digitalWrite(output26, LOW);
   digitalWrite(output27, LOW);
   mode=(state)digitalRead(statepin);
+
   int i;
   for(i=0;i<255;i++){
     digitalWrite(output26,HIGH);
+    delay(10);
   } //rotate to clear path and indicate initialization for debugging
   for(i=0;i<255;i++){
+    digitalWrite(output26,LOW);
     digitalWrite(output27,HIGH);
+    delay(10);
   } //reverse rotation
+  digitalWrite(output27,LOW);
   // Clear any old network settings and set to client mode
   WiFi.disconnect(true); 
   delay(500);
@@ -71,10 +95,73 @@ void setup() {
 }
 
 void loop(){
+  delay(100);
   if(mode==offline){
-    Serial.print("Offline Mode\n");
+
+    int ldrval=analogRead(ldr);
+  	if(ldrval<10){digitalWrite(led,HIGH);}
+  	else{digitalWrite(led,LOW);}
+  	Serial.print(ldrval);
     Serial.print(" ");
-    delay(1000);
+
+    int irval=analogRead(ir);
+  	Serial.print(irval);
+ 	  
+  	
+  	digitalWrite(trig, LOW);
+  	delayMicroseconds(2);
+  	digitalWrite(trig, HIGH);
+  	delayMicroseconds(10);
+  	digitalWrite(trig, LOW);
+  	double cm;
+  	double duration;
+  	duration = pulseIn(echo, HIGH);
+  	cm = microsecondsToCentimeters(duration);
+  	while(irval<500){
+      digitalWrite(trig, LOW);
+      delayMicroseconds(2);
+      digitalWrite(trig, HIGH);
+      delayMicroseconds(10);
+      digitalWrite(trig, LOW);
+      duration = pulseIn(echo, HIGH);
+      cm = microsecondsToCentimeters(duration);
+      if(cm<20&&cm>0){
+          Serial.print("Object Detected");
+          digitalWrite(output26,LOW);
+          digitalWrite(output27,LOW);
+          delay(100);
+          
+      }
+      if(cm>20){
+          Serial.print("Line Not Detected ");
+          digitalWrite(output26,HIGH);
+          delay(100);
+          digitalWrite(output26,LOW);
+          digitalWrite(output27,LOW);
+          
+      }
+      irval=analogRead(ir);
+      Serial.print(irval);
+      Serial.print(" ");
+      Serial.print(cm);
+      Serial.print("cm");
+      Serial.println();
+    }
+  	
+  	Serial.print(" ");
+  	Serial.print(cm);
+  	Serial.print("cm");
+  	Serial.println();
+  	if(cm>20){
+      	digitalWrite(buzzer,LOW);
+  		  digitalWrite(output27,HIGH);
+      	digitalWrite(output26,HIGH);
+    }
+    else {
+    	  digitalWrite(buzzer,HIGH);
+      	digitalWrite(output27,LOW);
+        digitalWrite(output26,LOW);
+    }
   }
   else if(mode==online){
   WiFiClient client = server.available();
