@@ -126,9 +126,10 @@ void loop(){
       duration = pulseIn(echo, HIGH);
       cm = microsecondsToCentimeters(duration);
       if(cm<20&&cm>0){
-          Serial.print("Object Detected");
+          Serial.print("Object Detected ");
           digitalWrite(output26,LOW);
           digitalWrite(output27,LOW);
+          digitalWrite(buzzer,HIGH);
           delay(100);
           
       }
@@ -140,6 +141,7 @@ void loop(){
           digitalWrite(output27,LOW);
           
       }
+      digitalWrite(buzzer,LOW);
       irval=analogRead(ir);
       Serial.print(irval);
       Serial.print(" ");
