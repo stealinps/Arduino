@@ -1,8 +1,17 @@
 #include <Servo.h> 
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 Servo servoMain;
+
+#define TEMP_PIN A0
+#define WL_PIN A1
+
+OneWire oneWire(TEMP_PIN);
+DallasTemperature tempSensor(&oneWire);
 
 int repeathour=0;
 int repeatmin=1;
@@ -15,27 +24,15 @@ void setup(){
   lcd.begin();
   lcd.backlight();
   lcd.print("Hello Fish!");
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  Serial.begin(9600);
-  Serial.print("H");
-  Serial.print(" ");
-  Serial.print("M");
-  Serial.print(" ");
-  Serial.println("S");
-  lcd.print("H");
-  lcd.print(" ");
-  lcd.print("M");
-  lcd.print(" ");
-  lcd.print("S");
   delay(1000);
   lcd.clear();
+
   lcd.setCursor(0, 0);
-  lcd.print("H");
-  lcd.print(" ");
-  lcd.print("M");
-  lcd.print(" ");
-  lcd.print("S");
+  lcd.print(" H  M  S   WL T");
+
+  Serial.begin(9600);
+  tempSensor.begin();
+
   servoMain.write(90);
 }
 
@@ -49,18 +46,29 @@ void loop(){
     unsigned long m = millis2min();
     unsigned long s = millis2sec();
 
-    Serial.print(h);
-    Serial.print(" ");
-    Serial.print(m);
-    Serial.print(" ");
-    Serial.println(s);
+    int wl = analogRead(WL_PIN);       
 
-    lcd.setCursor(0, 1); // second row, keeps H M S header on row 0 intact
-    printPadded(h);
+    tempSensor.requestTemperatures();
+    float tempC = tempSensor.getTempCByIndex(0);
+
+    Serial.print(h);
+    Serial.print(m);
+    Serial.print(s);
+    Serial.print("WL:");
+    Serial.print(wl);
+    Serial.print("T:");
+    Serial.println(tempC);
+
+    lcd.setCursor(0, 1);
+    printPadded2(h);
     lcd.print(" ");
-    printPadded(m);
+    printPadded2(m);
     lcd.print(" ");
-    printPadded(s);
+    printPadded2(s);
+    lcd.print(" ");
+    printPadded4(wl);
+    lcd.print(" ");
+    lcd.print((int)tempC);
 
     if(((h*60*60)+(m*60)+s) % repeattime == 0){
       eat();
@@ -70,9 +78,14 @@ void loop(){
   }
 }
 
-// prints a value as 2 characters wide so leftover digits from a
-// previous longer value (e.g. "10" -> "9") never get left behind
-void printPadded(unsigned long val){
+void printPadded2(unsigned long val){
+  if(val < 10) lcd.print(" ");
+  lcd.print(val);
+}
+
+void printPadded4(int val){
+  if(val < 1000) lcd.print(" ");
+  if(val < 100) lcd.print(" ");
   if(val < 10) lcd.print(" ");
   lcd.print(val);
 }
